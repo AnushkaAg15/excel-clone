@@ -11,6 +11,9 @@ cellSection.addEventListener("scroll",function(e){
   columnTagSection.style.transform = `translateX(-${e.currentTarget.scrollLeft}px)`;
 });
 
+//super object
+let dataObj={};
+
 for(let i=1;i<=100;i++){
     let div=document.createElement("div");
     div.innerText=i;
@@ -46,7 +49,25 @@ for (let i = 1; i <= 100; i++) {
 
     let cellAddress = reqAlphabet + i;
 
+    dataObj[cellAddress]={
+      value:undefined,
+      formula:undefined,
+      upstream:[],
+      downstream:[]
+    };
+
     let cellDiv = document.createElement("div");
+
+    cellDiv.addEventListener("input",function(e){
+      //jis cell pr type krna usk attritube se maine uska cell address fetch kra
+      let currCellAddress=e.currentTarget("data-Address")
+      //kiki saare cell oject data obj me store ho rakhe hain usin their cell address a key
+      //main jis cell pr click krk type krna uska hi address fetch and uska hi object 
+      //to wo address as a key use krk dataobj se fetch krlia req cell obj
+      let currCellobj=dataObj[currCellAddress]
+      
+      currCellobj.value=e.currentTarget.innerText;
+    })
 
     // cellDiv.contentEditable = true
 
