@@ -65,8 +65,20 @@ for (let i = 1; i <= 100; i++) {
       //main jis cell pr click krk type krna uska hi address fetch and uska hi object 
       //to wo address as a key use krk dataobj se fetch krlia req cell obj
       let currCellobj=dataObj[currCellAddress]
-      
+
       currCellobj.value=e.currentTarget.innerText;
+      
+      currCellobj.formula=undefined;
+
+      //loop on upstream
+      //for each case cell go to its downstream and remove urself
+      //apni upstream ko empty array kr do 
+
+      let currUpstream= currCellobj.upstream;
+      for(let k=0;k<currUpstream.length;k++){
+        removeFromDownstream(currUpstream[k],currCellAddress); //parent, child
+      }
+      currCellobj.upstream=[];
     })
 
     // cellDiv.contentEditable = true
@@ -99,4 +111,21 @@ for (let i = 1; i <= 100; i++) {
   }
 
   cellSection.append(rowDiv);
+}
+
+//is function ko kisi ki upstream se mtlb nhi hai 
+//iska bas itna sa kaam hai ki parent do chikd do, or m parent ki downstream se child ko hta dungi taki unk beech 
+//ka connection khatam ho jaye, taki agr parent ki value update ho connection khatam hone k baad child update na ho
+function removeFromDownstream(parentCell, childCell){
+  //1, fetch parentCell's downstream
+  let parentCellDownstream=dataObj[parentCell].downstream;
+
+  //2. filter kro childcell ko parent cell ki upstream se 
+  let filterDownstream=[];
+  for(let i=0;i<parentCellDownstream.length;i++){
+    if(parentCellDownstream[i]!=childCell){
+         filterDownstream.push(parentCellDownstream[i]);
+    }
+  }
+  dataObj[parentCell].downstream=filterDownstream;
 }
