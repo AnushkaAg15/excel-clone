@@ -79,7 +79,13 @@ for (let i = 1; i <= 100; i++) {
         removeFromDownstream(currUpstream[k],currCellAddress); //parent, child
       }
       currCellobj.upstream=[];
-    })
+
+      let currDownstream=currCellobj.downstream;
+      for(let i=0;i<currDownstream.length;i++){
+        updateCell(currDownstream[i])
+      }
+      dataObj[currCellAddress]=currCellobj;
+    });
 
     // cellDiv.contentEditable = true
 
@@ -128,4 +134,28 @@ function removeFromDownstream(parentCell, childCell){
     }
   }
   dataObj[parentCell].downstream=filterDownstream;
+}
+
+function updateCell(cell){
+  let cellObj=dataObj[cell]
+  let upstream= cellObj.upstream;
+  let formula=cellObj.formula;
+   
+  //upstream me jo bi cells hain unk oject me jana vahan se unki value lekr aana, wo saari values ek object me key
+  //value pair k form me store karana when key being the
+
+  let valObj={};
+  for(let i=0;i<upstream.length;i++){
+    let cellValue=dataObj[upstream[i]].vslue
+    valObj[upstream[i]]=cellValue;
+  }
+  for(let key in valObj){
+    formula=formula.replace(key,valObj[key])
+  }
+  let newValue=eval(formula);
+  dataObj[cell].value=newValue
+  let downstream=cellObj.downstream;
+  for(let i=0;i<downstream.length;i++){
+    updateCell(downstream[i]);
+  }
 }
